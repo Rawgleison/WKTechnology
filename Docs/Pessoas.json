@@ -1,0 +1,20 @@
+{
+   "idpessoa":1,
+   "flnatureza":1,
+   "dsdocumento":"32165498754",
+   "nmprimeiro":"raul",
+   "nmsegundo":"amaral",
+   "dtregistro":"2022-10-22",
+   "enderecos":[
+      {
+         "idendereco":1,
+         "idpessoa":1,
+         "dscep":"16201371"
+      },
+      {
+         "idendereco":2,
+         "idpessoa":1,
+         "dscep":"16201111"
+      }
+   ]
+}

@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{0D145B91-9A42-4F77-9BA1-69A131A65DE3}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="DataSnap\WKDataSnap.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ViewClient\prjWKViewClient.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="WKDataSnap">
+        <MSBuild Projects="DataSnap\WKDataSnap.dproj"/>
+    </Target>
+    <Target Name="WKDataSnap:Clean">
+        <MSBuild Projects="DataSnap\WKDataSnap.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="WKDataSnap:Make">
+        <MSBuild Projects="DataSnap\WKDataSnap.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="prjWKViewClient">
+        <MSBuild Projects="ViewClient\prjWKViewClient.dproj"/>
+    </Target>
+    <Target Name="prjWKViewClient:Clean">
+        <MSBuild Projects="ViewClient\prjWKViewClient.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="prjWKViewClient:Make">
+        <MSBuild Projects="ViewClient\prjWKViewClient.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="WKDataSnap;prjWKViewClient"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="WKDataSnap:Clean;prjWKViewClient:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="WKDataSnap:Make;prjWKViewClient:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
