@@ -134,6 +134,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="controllers\entities\unt.Controller.Entitie.Endereco.pas"/>
         <DCCReference Include="helpers\Raul.pas"/>
         <DCCReference Include="models\entities\unt.Model.Entitie.Endereco.Integracao.pas"/>
+        <DCCReference Include="controllers\utils\unt.Controller.Utils.Log.pas"/>
         <None Include="ModelSupport_WKDataSnap\untConfFile\default.txvpck"/>
         <None Include="ModelSupport_WKDataSnap\untConfFile\default.txaPackage"/>
         <None Include="ModelSupport_WKDataSnap\untConfig\default.txaPackage"/>
@@ -192,10 +193,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
                 <WelcomePageFolder Path="..\WKDataSnap"/>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="images\collapse.png" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="js\base64.js" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
-                        <RemoteDir>.\images\</RemoteDir>
-                        <RemoteName>collapse.png</RemoteName>
+                        <RemoteDir>.\js\</RemoteDir>
+                        <RemoteName>base64.js</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -728,10 +729,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="js\base64.js" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="images\collapse.png" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
-                        <RemoteDir>.\js\</RemoteDir>
-                        <RemoteName>base64.js</RemoteName>
+                        <RemoteDir>.\images\</RemoteDir>
+                        <RemoteName>collapse.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

@@ -16,8 +16,9 @@ uses
   DataSet.Serialize.Utils in 'helpers\serialize\DataSet.Serialize.Utils.pas',
   Raul in 'helpers\Raul\Raul.pas',
   unt.Controller.Home in 'controller\unt.Controller.Home.pas' {dmHomeController: TDataModule},
-  unt.Model.Pessoa in 'model\entities\unt.Model.Pessoa.pas',
-  Pkg.Json.DTO in 'helpers\Pkg.Json.DTO.pas';
+  unt.Model.Entitie.Pessoa in 'model\entities\unt.Model.Entitie.Pessoa.pas',
+  Pkg.Json.DTO in 'helpers\Pkg.Json.DTO.pas',
+  unt.Model.Entitie.Integracao in 'model\entities\unt.Model.Entitie.Integracao.pas';
 
 {$R *.res}
 

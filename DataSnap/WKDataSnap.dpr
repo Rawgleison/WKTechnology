@@ -24,7 +24,8 @@ uses
   DataSetConverter4D.Util in 'helpers\DataSetConverter\DataSetConverter4D.Util.pas',
   unt.Controller.Entitie.Endereco in 'controllers\entities\unt.Controller.Entitie.Endereco.pas',
   Raul in 'helpers\Raul.pas',
-  unt.Model.Entitie.Endereco.Integracao in 'models\entities\unt.Model.Entitie.Endereco.Integracao.pas';
+  unt.Model.Entitie.Endereco.Integracao in 'models\entities\unt.Model.Entitie.Endereco.Integracao.pas',
+  unt.Controller.Utils.Log in 'controllers\utils\unt.Controller.Utils.Log.pas';
 
 {$R *.res}
 

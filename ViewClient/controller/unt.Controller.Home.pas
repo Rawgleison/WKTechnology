@@ -7,7 +7,7 @@ uses
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.StorageBin, Data.DB, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, Raul, Vcl.StdCtrls, REST.Client,
-  System.JSON, unt.Model.Pessoa;
+  System.JSON, unt.Model.Entitie.Pessoa;
 
 type
   TTypeTransiction = (INSERT, EDIT);
@@ -37,6 +37,8 @@ type
     function GravarPessoa(pIdpessoa: String; pNatureza: TTipoNatureza; pNmprimeiro,
   pNmsegundo, pdsdocumento: String): TJSONValue;
     function GetPessoa(pId: Integer): TPessoa;
+    procedure StartIntegracao;
+    function CsvToJson(pFileName: TFileName): TJSONArray;
 
   end;
 
@@ -46,7 +48,7 @@ var
 implementation
 
 uses
-  DataSet.Serialize, REST.Json;
+  DataSet.Serialize, REST.Json, unt.Model.Entitie.Integracao;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -84,6 +86,44 @@ begin
   ja := TPessoa.GetAll as TJSONArray;
   memTablePessoa.Close;
   memTablePessoa.LoadFromJSON(ja);
+end;
+
+function TdmHomeController.CsvToJson(pFileName: TFileName): TJSONArray;
+var
+  fName: String;
+  fileCsv, titles, recStr: TStringList;
+  I: Integer;
+  jo: TJSONObject;
+  ja: TJSONArray;
+  II: Integer;
+begin
+  fileCsv := TStringList.Create;
+  titles := TStringList.Create;
+  recStr := TStringList.Create;
+  ja := TJSONArray.Create;
+  try
+  fileCsv.LoadFromFile(pFileName);
+
+  titles.Delimiter := ';';
+  recStr.Delimiter := ';';
+
+  titles.DelimitedText := filecsv[0];
+  for I := 1 to fileCsv.Count - 1 do
+  begin
+    recStr.DelimitedText := fileCsv[i];
+    jo := TJSONObject.Create;
+    for II := 0 to recstr.Count - 1 do
+      jo.AddPair(titles[II],recStr[II]);
+    ja.Add(jo);
+  end;
+
+  Result := ja;
+  finally
+    fileCsv.Free;
+    titles.Free;
+    recStr.Free;
+//    ja.Free;
+  end;
 end;
 
 procedure TdmHomeController.DataModuleCreate(Sender: TObject);
@@ -160,6 +200,18 @@ begin
     endereco.insert;
   finally
     endereco.Free;
+  end;
+end;
+
+procedure TdmHomeController.StartIntegracao;
+var
+  ei: TEnderecoIntegracao;
+begin
+  ei := TEnderecoIntegracao.Create;
+  try
+    ei.StartIntegracao;
+  finally
+    ei.Free;
   end;
 end;
 

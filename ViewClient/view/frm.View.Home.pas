@@ -9,7 +9,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, FireDAC.Stan.StorageBin,
-  Vcl.Buttons, Raul, Vcl.Menus;
+  Vcl.Buttons, Raul, Vcl.Menus, Vcl.ExtDlgs;
 
 type
   TMyDBGrid = class(TDBGrid);
@@ -47,6 +47,12 @@ type
     btnCancelarPessoa: TBitBtn;
     ppmPessoa: TPopupMenu;
     Excluir2: TMenuItem;
+    btnIntegracao: TBitBtn;
+    btnImportação: TBitBtn;
+    OpenTextFileDialog1: TOpenTextFileDialog;
+    TabSheet1: TTabSheet;
+    BitBtn1: TBitBtn;
+    Memo1: TMemo;
     procedure cbNaturezaChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnAtualizarClick(Sender: TObject);
@@ -59,6 +65,8 @@ type
     procedure Excluir1Click(Sender: TObject);
     procedure btnCancelarPessoaClick(Sender: TObject);
     procedure Excluir2Click(Sender: TObject);
+    procedure btnIntegracaoClick(Sender: TObject);
+    procedure btnImportaçãoClick(Sender: TObject);
   private
     procedure LerConfig;
     procedure ClearFields;
@@ -74,7 +82,7 @@ implementation
 
 uses
   dm.Model.Rest, System.JSON, unt.Controller.Config,
-  unt.Controller.Home, REST.Client, unt.Model.Pessoa;
+  unt.Controller.Home, REST.Client, unt.Model.Entitie.Pessoa, REST.JsonReflect;
 
 {$R *.dfm}
 
@@ -108,6 +116,18 @@ begin
   );
   ClearFields;
   cbNatureza.SetFocus;
+end;
+
+procedure TfrmHome.btnImportaçãoClick(Sender: TObject);
+begin
+  if OpenTextFileDialog1.Execute then
+    Memo1.Text := dmHomeController.CsvToJson(OpenTextFileDialog1.FileName).Format();
+end;
+
+procedure TfrmHome.btnIntegracaoClick(Sender: TObject);
+begin
+  dmHomeController.StartIntegracao;
+  MessageRaul_AVISO('Integração iniciada');
 end;
 
 procedure TfrmHome.carregarPessoa(id: integer);
@@ -191,10 +211,10 @@ end;
 procedure TfrmHome.FormShow(Sender: TObject);
 begin
   LerConfig;
-  dmHomeController.AtualizarLista;
+//  dmHomeController.AtualizarLista;
   ClearFields;
   cbNatureza.SetFocus;
-  TMyDBGrid(dbgCep).DefaultRowHeight := 28;
+//  TMyDBGrid(dbgCep).DefaultRowHeight := 28;
 end;
 
 procedure TfrmHome.LerConfig;

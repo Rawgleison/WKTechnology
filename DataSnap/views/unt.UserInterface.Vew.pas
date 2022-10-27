@@ -3,7 +3,7 @@ unit unt.UserInterface.Vew;
 interface
 
 uses
-  Winapi.Messages, System.SysUtils, System.Variants,
+  Winapi.Messages, System.SysUtils, System.Variants, System.DateUtils,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.AppEvnts, Vcl.StdCtrls, IdHTTPWebBrokerBridge, IdGlobal, Web.HTTPApp,
   Vcl.ExtCtrls, IniFiles, Vcl.ComCtrls, IdComponent, unt.Model.Config.Factory;
@@ -21,6 +21,7 @@ type
     edtConnectionPassword: TLabeledEdit;
     chkInicioAutomatico: TCheckBox;
     edtConnectionDatabase: TLabeledEdit;
+    reditLog: TRichEdit;
     procedure FormCreate(Sender: TObject);
     procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure ButtonStartClick(Sender: TObject);
@@ -32,6 +33,8 @@ type
     procedure StopService;
     procedure saveConnectionParam;
     procedure readConnectionParam;
+    procedure Log(pMsg: String; pError: Boolean=false);
+  public
   end;
 
 var
@@ -43,7 +46,7 @@ implementation
 
 uses
   WinApi.Windows, Winapi.ShellApi, Datasnap.DSSession, unt.Model.Config.Server,
-  unt.Model.Config.DB;
+  unt.Model.Config.DB, unt.Controller.Utils.Log;
 
 procedure TfrmUserInterface.ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
 begin
@@ -76,6 +79,8 @@ end;
 procedure TfrmUserInterface.FormCreate(Sender: TObject);
 begin
   FServer := TIdHTTPWebBrokerBridge.Create(Self);
+  LogCLass := TLogController.Instance;
+  LogClass.OnLog := Log;
 end;
 
 procedure TfrmUserInterface.FormShow(Sender: TObject);
@@ -83,6 +88,14 @@ begin
   readConnectionParam;
   if chkInicioAutomatico.Checked then
     StartServer;
+end;
+
+procedure TfrmUserInterface.Log(pMsg: String; pError: Boolean);
+begin
+  if pError then
+    reditLog.Font.Color := clRed;
+
+    reditLog.Lines.Add(FormatDateTime('dd/MM/yyyy HH:MM:SS| ',now) + pMsg);
 end;
 
 procedure TfrmUserInterface.readConnectionParam;
@@ -94,6 +107,7 @@ begin
   edtConnectionUserName.Text  := Config.DB.UserName;
   edtCOnnectionPassword.Text  := Config.DB.Password;
   edtConnectionDatabase.Text  := Config.DB.Database;
+  Log('Lendo parâmetros');
 end;
 
 procedure TfrmUserInterface.saveConnectionParam;
@@ -105,6 +119,7 @@ begin
   Config.DB.UserName       := edtConnectionUserName.Text;
   Config.DB.Password       := edtConnectionPassword.Text;
   Config.DB.Database       := edtConnectionDatabase.Text;
+  Log('Salvando parametros');
 end;
 
 procedure TfrmUserInterface.StartServer;

@@ -5,7 +5,8 @@ interface
 uses System.SysUtils, System.Classes, System.Json,
     Datasnap.DSServer, Datasnap.DSAuth,
     REST.Json, FireDAC.Stan.StorageJSON, Data.DB,
-    unt.Controler.Entitie.Pessoa, unt.Controller.Entitie.Endereco;
+    unt.Controler.Entitie.Pessoa, unt.Controller.Entitie.Endereco,
+  unt.Model.Entitie.Endereco.Integracao;
 
 type
 {$METHODINFO ON}
@@ -13,7 +14,7 @@ type
   ['{BFE84404-7265-4146-AFE2-CC308CD2D1E7}']
     function Ping: string;
     function Pessoa(pId: Integer): TJSONArray;
-    function acceptPessoa(Json: TJSONObject): TJSONObject;
+    function acceptPessoa(pLote: String; Json: TJSONObject): TJSONObject;
     function cancelPessoa(pId: Integer): string;
     function updatePessoa(Json: TJSONObject): TJSONObject;
     function acceptEndereco(pJson: TJSONObject): TJSONObject;
@@ -25,26 +26,30 @@ type
   private
     FPessoaControl: TPessoaController;
     FEnderecoController: TEnderecoController;
+    entInt: TEnderecoIntegracaoModel;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
     function Ping: String;
     { Rotas de Pessoa }
     function Pessoa(pId: Integer): TJSONArray; // GET
-    function acceptPessoa(Json: TJSONObject): TJSONObject; // PUT insert
+    function acceptPessoa(pLote: String; json: TJSONObject): TJSONObject; // PUT insert
     function cancelPessoa(pId: Integer): String; // DELETE
     function updatePessoa(Json: TJSONObject): TJSONObject; // POST edit
     { Rotas endereco }
     function acceptEndereco(pJson: TJSONObject): TJSONObject;
     function updateEndereco(pJson: TJSONObject): TJSONObject;
     function cancelEndereco(pId: Integer): String;
+    {Rotas Endereco integracao}
+    procedure updateIntegracao(pId: Integer);
   end;
 {$METHODINFO OFF}
 
 implementation
 
 uses
-  unt.Model.Entitie.Pessoa;
+  unt.Model.Entitie.Pessoa,
+  unt.Controller.Utils.Log;
 
 { Service }
 
@@ -53,9 +58,10 @@ begin
   Result :=  FEnderecoController.insert(pJson);
 end;
 
-function Service.acceptPessoa(json: TJSONObject): TJSONObject;
+function Service.acceptPessoa(pLote: String; json: TJSONObject): TJSONObject;
 begin
-  Result := FPessoaControl.insert(json);
+  if pLote.ToUpper = 'LOTE' then
+    Result := FPessoaControl.insert(json);
 end;
 
 function Service.cancelEndereco(pId: Integer): String;
@@ -72,11 +78,14 @@ constructor Service.Create(AOwner: TComponent);
 begin
   inherited;
   FPessoaControl := TPessoaController.Create;
+  LogClass.Log('Service criado');
+  entInt := TEnderecoIntegracaoModel.Create;
 end;
 
 destructor Service.Destroy;
 begin
   FPessoaControl.Free;
+  entInt.Free;
   inherited;
 end;
 
@@ -93,6 +102,16 @@ end;
 function Service.updateEndereco(pJson: TJSONObject): TJSONObject;
 begin
   Result :=  FEnderecoController.update(pJson);
+end;
+
+procedure Service.updateIntegracao(pId: Integer);
+begin
+  if Pid > 0 then
+  begin
+    entInt.Idendereco := pId;
+    entInt.SetEndToDB(false);
+  end else
+    entInt.ExecuteThread;
 end;
 
 function Service.updatePessoa(json: TJSONObject): TJSONObject;

@@ -2,8 +2,8 @@ object frmUserInterface: TfrmUserInterface
   Left = 271
   Top = 114
   BorderStyle = bsDialog
-  ClientHeight = 248
-  ClientWidth = 317
+  ClientHeight = 576
+  ClientWidth = 325
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -130,6 +130,23 @@ object frmUserInterface: TfrmUserInterface
     Height = 17
     Caption = 'Auto Iniciar'
     TabOrder = 3
+  end
+  object reditLog: TRichEdit
+    Left = 0
+    Top = 256
+    Width = 325
+    Height = 320
+    Align = alBottom
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Color = clNone
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clHighlightText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+    Zoom = 100
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle

@@ -1,4 +1,4 @@
-unit unt.Model.Pessoa;
+unit unt.Model.Entitie.Pessoa;
 
 interface
 

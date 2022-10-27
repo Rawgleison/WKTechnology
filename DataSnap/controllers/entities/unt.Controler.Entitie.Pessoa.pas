@@ -19,7 +19,7 @@ Type
 
   TPessoaController = class(TInterfacedObject, IPessoaController)
   public
-    function insert(pJson: TJSONObject): TJSONObject;
+    function insert(pLote: String; pJson: TJSONObject): TJSONObject;
     function update(pJson: TJSONObject): TJSONObject;
     function GetPessoas(pId: Integer): TJSONArray;
     function DeletePessoa(pId: Integer): string;
@@ -72,7 +72,7 @@ begin
   end;
 end;
 
-function TPessoaController.insert(pJson: TJSONObject): TJSONObject;
+function TPessoaController.insert(pLote: String; pJson: TJSONObject): TJSONObject;
 begin
   Result := GravaPessoa(pJson,TOperacao.INSERT);
 end;
