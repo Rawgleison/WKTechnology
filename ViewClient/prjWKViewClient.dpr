@@ -18,11 +18,14 @@ uses
   unt.Controller.Home in 'controller\unt.Controller.Home.pas' {dmHomeController: TDataModule},
   unt.Model.Entitie.Pessoa in 'model\entities\unt.Model.Entitie.Pessoa.pas',
   Pkg.Json.DTO in 'helpers\Pkg.Json.DTO.pas',
-  unt.Model.Entitie.Integracao in 'model\entities\unt.Model.Entitie.Integracao.pas';
+  unt.Model.Entitie.Integracao in 'model\entities\unt.Model.Entitie.Integracao.pas',
+  unt.Controller.Entitie.Pessoa in 'controller\entities\unt.Controller.Entitie.Pessoa.pas',
+  unt.Controller.Entitie.Endereco in 'controller\entities\unt.Controller.Entitie.Endereco.pas';
 
 {$R *.res}
 
 begin
+//  ReportMemoryLeaksOnShutdown := True;
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TfrmHome, frmHome);

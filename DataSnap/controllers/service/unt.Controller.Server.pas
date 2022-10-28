@@ -12,14 +12,19 @@ type
 {$METHODINFO ON}
   IService = interface
   ['{BFE84404-7265-4146-AFE2-CC308CD2D1E7}']
-    function Ping: string;
-    function Pessoa(pId: Integer): TJSONArray;
-    function acceptPessoa(pLote: String; Json: TJSONObject): TJSONObject;
-    function cancelPessoa(pId: Integer): string;
-    function updatePessoa(Json: TJSONObject): TJSONObject;
+    function Ping: String;
+    { Rotas de Pessoa }
+    function Pessoa(pId: Integer): TJSONArray; // GET
+    function acceptPessoa(pJson: TJSONObject): TJSONObject; // PUT insert
+    function acceptPessoas(pJson: TJSONArray): String; //PUT insert em lote
+    function cancelPessoa(pId: Integer): String; // DELETE
+    function updatePessoa(Json: TJSONObject): TJSONObject; // POST edit
+    { Rotas endereco }
     function acceptEndereco(pJson: TJSONObject): TJSONObject;
     function updateEndereco(pJson: TJSONObject): TJSONObject;
-    function cancelEndereco(pId: Integer): string;
+    function cancelEndereco(pId: Integer): String;
+    {Rotas Endereco integracao}
+    procedure updateIntegracao(pId: Integer);
   end;
 
   Service = class(TComponent, IService)
@@ -33,7 +38,8 @@ type
     function Ping: String;
     { Rotas de Pessoa }
     function Pessoa(pId: Integer): TJSONArray; // GET
-    function acceptPessoa(pLote: String; json: TJSONObject): TJSONObject; // PUT insert
+    function acceptPessoa(pJson: TJSONObject): TJSONObject; // PUT insert
+    function acceptPessoas(pJson: TJSONArray): String; //PUT insert em lote
     function cancelPessoa(pId: Integer): String; // DELETE
     function updatePessoa(Json: TJSONObject): TJSONObject; // POST edit
     { Rotas endereco }
@@ -58,10 +64,14 @@ begin
   Result :=  FEnderecoController.insert(pJson);
 end;
 
-function Service.acceptPessoa(pLote: String; json: TJSONObject): TJSONObject;
+function Service.acceptPessoa(pJson: TJSONObject): TJSONObject;
 begin
-  if pLote.ToUpper = 'LOTE' then
-    Result := FPessoaControl.insert(json);
+  Result := FPessoaControl.insert(pJson);
+end;
+
+function Service.acceptPessoas(pJson: TJSONArray): String;
+begin
+  Result := FPessoaControl.batchInsert(pJson);
 end;
 
 function Service.cancelEndereco(pId: Integer): String;

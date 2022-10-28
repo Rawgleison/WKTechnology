@@ -133,6 +133,8 @@
         <DCCReference Include="model\entities\unt.Model.Entitie.Pessoa.pas"/>
         <DCCReference Include="helpers\Pkg.Json.DTO.pas"/>
         <DCCReference Include="model\entities\unt.Model.Entitie.Integracao.pas"/>
+        <DCCReference Include="controller\entities\unt.Controller.Entitie.Pessoa.pas"/>
+        <DCCReference Include="controller\entities\unt.Controller.Entitie.Endereco.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

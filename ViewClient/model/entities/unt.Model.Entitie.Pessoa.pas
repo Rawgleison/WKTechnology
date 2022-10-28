@@ -57,6 +57,7 @@ type
     function edit: TJSONValue;
     class procedure delete(pId: integer);
     function GetNatureza: TTipoNatureza;
+    class function SetPessoas(pJson: TJSONArray):String;
   end;
 
 implementation
@@ -90,6 +91,11 @@ end;
 function TPessoa.insert: TJSONValue;
 begin
   Result := dmRest.PutRequest('pessoa',Self.GetAsJson);
+end;
+
+class function TPessoa.SetPessoas(pJson: TJSONArray): String;
+begin
+  Result := dmRest.PutRequest('pessoas',pJson.ToJSON).Value;
 end;
 
 function TPessoa.edit: TJSONValue;

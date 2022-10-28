@@ -1,7 +1,7 @@
 ﻿object frmHome: TfrmHome
   Left = 0
   Top = 0
-  ActiveControl = BitBtn1
+  ActiveControl = Panel4
   Caption = 'frmHome'
   ClientHeight = 567
   ClientWidth = 733
@@ -17,12 +17,12 @@
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object PageControl1: TPageControl
+  object pgControlHome: TPageControl
     Left = 0
     Top = 0
     Width = 733
     Height = 567
-    ActivePage = TabSheet1
+    ActivePage = tsCadPessoa
     Align = alClient
     TabOrder = 0
     object tsCadPessoa: TTabSheet
@@ -279,7 +279,7 @@
           object edtnmprimeiro: TLabeledEdit
             Left = 8
             Top = 128
-            Width = 143
+            Width = 210
             Height = 27
             EditLabel.Width = 107
             EditLabel.Height = 19
@@ -301,7 +301,7 @@
           object edtnmsegundo: TLabeledEdit
             Left = 8
             Top = 176
-            Width = 143
+            Width = 210
             Height = 27
             EditLabel.Width = 81
             EditLabel.Height = 19
@@ -324,7 +324,7 @@
           object cbNatureza: TComboBox
             Left = 8
             Top = 80
-            Width = 143
+            Width = 210
             Height = 27
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -343,7 +343,7 @@
           object medtDoc: TMaskEdit
             Left = 8
             Top = 224
-            Width = 141
+            Width = 210
             Height = 27
             EditMask = '999\.999\.999\-99;0;_'
             Font.Charset = DEFAULT_CHARSET
@@ -438,7 +438,7 @@
           object edtIdPessoa: TLabeledEdit
             Left = 8
             Top = 23
-            Width = 143
+            Width = 210
             Height = 27
             TabStop = False
             EditLabel.Width = 50

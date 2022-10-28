@@ -9,6 +9,8 @@ object WebModule1: TWebModule1
   Height = 333
   Width = 414
   object DSServer: TDSServer
+    OnError = DSServerError
+    OnTrace = DSServerTrace
     Left = 96
     Top = 11
   end
@@ -16,6 +18,7 @@ object WebModule1: TWebModule1
     Server = DSServer
     Filters = <>
     AuthenticationManager = DSAuthenticationManager
+    OnHTTPTrace = DSHTTPWebDispatcherHTTPTrace
     WebDispatch.PathInfo = 'datasnap*'
     Left = 96
     Top = 75

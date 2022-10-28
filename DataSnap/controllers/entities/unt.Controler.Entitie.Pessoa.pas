@@ -9,17 +9,19 @@ Uses
 Type
   IPessoaController = interface
   ['{78A105E5-8C5B-4015-B188-F95651F56296}']
-    function GravaPessoa(pJson: TJSONObject; pOperacao: TOperacao): TJSONObject;
-    function ValidarDados(pPessoa: TPessoa; pOperacao: TOperacao): boolean;
     function insert(pJson: TJSONObject): TJSONObject;
+    function batchInsert(pJson: TJSONArray): String;
     function update(pJson: TJSONObject): TJSONObject;
     function GetPessoas(pId: Integer): TJSONArray;
-    function DeletePessoa(pId: Integer): String;
+    function DeletePessoa(pId: Integer): string;
+    function GravaPessoa(pJson: TJSONObject; pOperacao: TOperacao): TJSONObject;
+    function ValidarDados(pPessoa: TPessoa; pOperacao: TOperacao): boolean;
   end;
 
   TPessoaController = class(TInterfacedObject, IPessoaController)
   public
-    function insert(pLote: String; pJson: TJSONObject): TJSONObject;
+    function insert(pJson: TJSONObject): TJSONObject;
+    function batchInsert(pJson: TJSONArray): String;
     function update(pJson: TJSONObject): TJSONObject;
     function GetPessoas(pId: Integer): TJSONArray;
     function DeletePessoa(pId: Integer): string;
@@ -30,10 +32,17 @@ Type
 implementation
 
 uses
-  REST.Json, Raul;
+  REST.Json, Raul, unt.Controller.Utils.Log;
 
 { TPessoaController }
 
+function TPessoaController.batchInsert(pJson: TJSONArray): String;
+begin
+  LogClass.Log('Inicando inserção em Lote de '+pJson.Count.ToString+' registros.');
+  TPessoa.BatchInsert(pJson);
+  LogClass.Log('Inserção em lote finalizada');
+  Result := 'Gravando '+pJson.Count.ToString+' registros no banco. Em breve estarão na base de dados.';
+end;
 
 function TPessoaController.deletePessoa(pId: Integer): string;
 begin
@@ -52,8 +61,10 @@ end;
 function TPessoaController.GravaPessoa(pJson: TJSONObject; pOperacao: TOperacao): TJSONObject;
 var
   pessoa: TPessoa;
+  resp: string;
 begin
-  pJson.RemovePair('dtregistro');
+  if pJson.TryGetValue<String>('dtregistro',resp) then
+    pJson.RemovePair('dtregistro');
   pessoa := TJSON.JsonToObject<TPessoa>(pJson);
   try
     validarDados(pessoa, pOperacao);
@@ -72,9 +83,9 @@ begin
   end;
 end;
 
-function TPessoaController.insert(pLote: String; pJson: TJSONObject): TJSONObject;
+function TPessoaController.insert(pJson: TJSONObject): TJSONObject;
 begin
-  Result := GravaPessoa(pJson,TOperacao.INSERT);
+    Result := GravaPessoa(pJson,TOperacao.INSERT);
 end;
 
 function TPessoaController.update(pJson: TJSONObject): TJSONObject;

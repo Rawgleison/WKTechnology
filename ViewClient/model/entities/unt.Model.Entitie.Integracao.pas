@@ -7,7 +7,6 @@ Uses
 
 Type
   TEnderecoIntegracao = class
-  private
   public
     procedure StartIntegracao;
   end;

@@ -30,6 +30,7 @@ uses
 {$R *.res}
 
 begin
+//  ReportMemoryLeaksOnShutdown := True;
   if WebRequestHandler <> nil then
     WebRequestHandler.WebModuleClass := WebModuleClass;
   Application.Initialize;

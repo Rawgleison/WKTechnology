@@ -9,6 +9,7 @@ type
     TChars = set of Char;
 
   {Simplificador do MessageDialog}
+  procedure MessageRaul_SHOW(Msg: string);
   procedure MessageRaul_AVISO(Msg: string);
   procedure MessageRaul_ATENCAO(Msg: string);
   procedure MessageRaul_ERRO(Msg: string);
@@ -104,8 +105,12 @@ type
 
 implementation
 
-{Simplificador do MessageDialog}
+procedure MessageRaul_SHOW(Msg: string);
+begin
+  ShowMessage(Msg);
+end;
 
+{Simplificador do MessageDialog}
 procedure MessageRaul_AVISO(Msg: string);
 begin
   MessageDlg(Msg,mtInformation,[mbOK],0);

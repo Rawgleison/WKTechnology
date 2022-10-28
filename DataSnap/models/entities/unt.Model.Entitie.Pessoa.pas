@@ -5,7 +5,7 @@ interface
 uses
   Pkg.Json.DTO, System.Generics.Collections, REST.Json.Types,
   Data.DB, System.JSON, unt.Model.Entitie.Endereco,
-  DataSetConverter4D.Helper, idGlobal;
+  DataSetConverter4D.Helper, idGlobal, Raul, FireDAC.Stan.Intf;
 
 {$M+}
 
@@ -47,6 +47,8 @@ type
 
     class function GetPessoas(pId: Integer): TJSONArray; static;
     class function delete(pId: Integer): Integer; static;
+    class procedure BatchInsert(pJson: TJSONArray);
+//    class procedure CsvToInsert(pJson: TJSON)
   end;
 
   IPessoa = interface
@@ -222,6 +224,63 @@ begin
   finally
     qr.Free;
   end;
+end;
+
+class procedure TPessoa.BatchInsert(pJson: TJSONArray);
+const qtdExec = 10000;
+var
+  qr: TFDQuery;
+  ja: TJSONArray;
+  lastExec, countExec: Integer;
+begin
+  qr := dmConnection.CreateFDQuery;
+  try
+    dmConnection.fdTransaction.StartTransaction;
+    try
+      qr.ExecSQL('ALTER TABLE pessoa ADD COLUMN IF NOT EXISTS dscep_tmp character varying(15)');
+
+      qr.SQL.Clear;
+      qr.SQL.Add('INSERT INTO pessoa(flnatureza, dsdocumento, nmprimeiro, nmsegundo, dscep_tmp) ' +
+                 'VALUES(:flnatureza, :dsdocumento, :nmprimeiro, :nmsegundo, :dscep_tmp) ');
+
+      qr.Params.ArraySize := pJson.Count;
+      lastExec := 0;
+      countExec := 0;
+
+      for var I := 0 to pJson.Count - 1 do
+      begin
+        qr.Params[0].AsIntegers[I] := pJson[I].GetValue<Integer>('flnatureza');
+        qr.Params[1].AsStrings[I]  := pJson[I].GetValue<String>('dsdocumento');
+        qr.Params[2].AsStrings[I]  := pJson[I].GetValue<String>('nmprimeiro');
+        qr.Params[3].AsStrings[I]  := pJson[I].GetValue<String>('nmsegundo');
+        qr.Params[4].AsStrings[I]  := pJson[I].GetValue<String>('dsdocumento');
+        inc(countExec);
+        if countExec = qtdExec then
+        begin
+          qr.Execute(I,lastExec);
+          lastExec := I;
+          countExec := 0;
+        end;
+      end;
+      if lastExec < qr.Params.ArraySize then
+      qr.Execute(qr.Params.ArraySize,lastExec);
+
+      qr.SQL.Clear;
+      qr.ExecSQL('INSERT INTO endereco(idpessoa,dscep)' +
+                 '(SELECT idpessoa, dscep_tmp FROM pessoa WHERE dscep_tmp IS NOT NULL)');
+
+      qr.SQL.Clear;
+      qr.ExecSQL('ALTER TABLE pessoa DROP COLUMN dscep_tmp');
+
+      dmConnection.fdTransaction.Commit
+    except
+      dmConnection.fdTransaction.Rollback;
+      raise;
+    end;
+  finally
+    qr.Free;
+  end;
+
 end;
 
 end.

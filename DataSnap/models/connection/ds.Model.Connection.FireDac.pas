@@ -9,13 +9,15 @@ uses
   FireDAC.Phys.PGDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client,
   FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
   FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Stan.StorageJSON,
-  FireDAC.Stan.StorageBin, System.JSON;
+  FireDAC.Stan.StorageBin, System.JSON, FireDAC.Comp.BatchMove,
+  FireDAC.Comp.BatchMove.Text;
 
 type
   TdmConnection = class(TDataModule)
     Connection: TFDConnection;
     fdTransaction: TFDTransaction;
     qr: TFDQuery;
+    FDBatchMoveTextReader1: TFDBatchMoveTextReader;
     procedure ConnectionBeforeConnect(Sender: TObject);
   private
     procedure ReadParam;

@@ -15,7 +15,7 @@ type
   TMyDBGrid = class(TDBGrid);
   TipoNatureza = (FISICA,JURIDICA);
   TfrmHome = class(TForm)
-    PageControl1: TPageControl;
+    pgControlHome: TPageControl;
     tsCadPessoa: TTabSheet;
     tsOpcoes: TTabSheet;
     GroupBox1: TGroupBox;
@@ -119,9 +119,14 @@ begin
 end;
 
 procedure TfrmHome.btnImportaçãoClick(Sender: TObject);
+var
+  fName: String;
 begin
   if OpenTextFileDialog1.Execute then
-    Memo1.Text := dmHomeController.CsvToJson(OpenTextFileDialog1.FileName).Format();
+  begin
+    fname := OpenTextFileDialog1.FileName;
+    dmHomeController.GravarPessoas(fname);
+  end;
 end;
 
 procedure TfrmHome.btnIntegracaoClick(Sender: TObject);
@@ -205,16 +210,17 @@ begin
   cbNatureza.Items.Clear;
   cbNatureza.AddItem('Física',TObject(TTipoNatureza.FISICA));
   cbNatureza.AddItem('Jurídica',TObject(TTipoNatureza.JURIDICA));
-  PageControl1.TabIndex := 0;
+  pgControlHome.TabIndex := 0;
 end;
 
 procedure TfrmHome.FormShow(Sender: TObject);
 begin
   LerConfig;
-//  dmHomeController.AtualizarLista;
+  dmHomeController.AtualizarLista;
   ClearFields;
   cbNatureza.SetFocus;
-//  TMyDBGrid(dbgCep).DefaultRowHeight := 28;
+  TMyDBGrid(dbgCep).DefaultRowHeight := 28;
+
 end;
 
 procedure TfrmHome.LerConfig;

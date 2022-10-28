@@ -7,7 +7,7 @@ uses
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.StorageBin, Data.DB, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, Raul, Vcl.StdCtrls, REST.Client,
-  System.JSON, unt.Model.Entitie.Pessoa;
+  System.JSON, unt.Model.Entitie.Pessoa, unt.Controller.Entitie.Endereco;
 
 type
   TTypeTransiction = (INSERT, EDIT);
@@ -30,10 +30,10 @@ type
     procedure VerificarDados(pPessoa: TPessoa; pInserindo: boolean);
   public
     procedure AdicionarCep(pIdpessoa, pIdEndereco, pCep: String; pInsert: Boolean=false);
-    procedure insertEndereco(pIdpessoa, pIdEndereco, pCep: String);
     procedure deleteEndereco(pId: integer);
     procedure deletePessoa(pId: integer);
     procedure AtualizarLista;
+    procedure GravarPessoas(pFname: String);
     function GravarPessoa(pIdpessoa: String; pNatureza: TTipoNatureza; pNmprimeiro,
   pNmsegundo, pdsdocumento: String): TJSONValue;
     function GetPessoa(pId: Integer): TPessoa;
@@ -66,7 +66,7 @@ begin
     if memTblCEP.IsEmpty then
     begin
       if pInsert and (not pIdpessoa.IsEmpty) then
-        insertEndereco(pIdpessoa,pIdEndereco,pCep);
+        TEnderecoController.insert(pIdpessoa,pIdEndereco,pCep);
 
       memTblCEP.Append;
       memTblCEP.FieldByName('idpessoa').AsString := pIdpessoa;
@@ -81,11 +81,21 @@ end;
 
 procedure TdmHomeController.AtualizarLista;
 var
-  ja: TJSONArray;
+  vr: string;
 begin
-  ja := TPessoa.GetAll as TJSONArray;
-  memTablePessoa.Close;
-  memTablePessoa.LoadFromJSON(ja);
+  TThread.CreateAnonymousThread(
+  procedure
+  var
+    ja: TJSONArray;
+  begin
+    ja := TPessoa.GetAll as TJSONArray;
+    memTablePessoa.EmptyDataSet;
+    memTablePessoa.DisableControls;
+    if ja[0].Value.ToUpper <> 'NULL' then
+      memTablePessoa.LoadFromJSON(ja);
+    memTablePessoa.EnableControls;
+  end
+  ).Start;
 end;
 
 function TdmHomeController.CsvToJson(pFileName: TFileName): TJSONArray;
@@ -135,7 +145,7 @@ end;
 procedure TdmHomeController.deleteEndereco(pId: integer);
 begin
   if pid > 0 then
-    TEndereco.delete(pId);
+    TEnderecoController.delete(pId);
   memTblCEP.Delete;
 end;
 
@@ -188,19 +198,13 @@ begin
   end;
 end;
 
-
-procedure TdmHomeController.insertEndereco(pIdpessoa, pIdEndereco, pCep: String);
+procedure TdmHomeController.GravarPessoas(pFname: String);
 var
-  endereco: TEndereco;
+  ja: TJSONArray;
 begin
-  endereco := TEndereco.Create;
-  try
-    endereco.Idpessoa := StrToIntDef(pIdpessoa,0);
-    endereco.Dscep := pCep;
-    endereco.insert;
-  finally
-    endereco.Free;
-  end;
+  ja := CsvToJson(pFname);
+  TPessoa.SetPessoas(ja);
+  MessageRaul_AVISO('Lote enviado com sucesso.');
 end;
 
 procedure TdmHomeController.StartIntegracao;
